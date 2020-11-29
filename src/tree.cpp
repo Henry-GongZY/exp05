@@ -22,15 +22,19 @@ void TreeNode::addSibling(TreeNode* sibling){
 }
 
 TreeNode::TreeNode(int lineno, NodeType type) {
-    
+    this->lineno = lineno;
+    this->type = type;
+    genNodeId();
 }
 
 void TreeNode::genNodeId() {
-
+    this->nodeID = nodeid;
+    nodeid++;
 }
 
 void TreeNode::printNodeInfo() {
-
+    string TYPE = "";
+    cout<<"lno@"<<this->lineno<<"   "<<"@"<<this->nodeID<<"   "<<TYPE<<
 }
 
 void TreeNode::printChildrenId() {

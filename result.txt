@@ -23,8 +23,8 @@ lno@8	@21	const type: int
 lno@9	@22	statement	children: [@23 @24 @25 	] stmt: decl
 lno@9	@23	type type: int
 lno@9	@24	variable varname: c
-lno@9	@25	const type: int
-lno@10	@26	statement	children: [@27 @30 @33 @36 @40 	] stmt: while
+lno@9   @25	const type: int
+lno@10  @26	statement	children: [@27 @30 @33 @36 @40 	] stmt: while
 lno@10	@27	expression	children: [@28 @29 	]
 lno@10	@28	variable varname: n
 lno@10	@29	const type: int

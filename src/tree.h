@@ -6,13 +6,13 @@
 
 enum NodeType
 {
-    NODE_CONST, 
-    NODE_VAR,
-    NODE_EXPR,
-    NODE_TYPE,
-
-    NODE_STMT,
-    NODE_PROG,
+    NODE_CONST,  //常量
+    NODE_VAR,    //变量
+    NODE_EXPR,   //表达式
+    NODE_TYPE,   //类型
+    NODE_STMT,   //语句
+    NODE_PROG,   
+    NODE_MAIN    //main函数入口
 };
 
 enum OperatorType
@@ -28,9 +28,9 @@ enum StmtType {
 
 struct TreeNode {
 public:
-    int nodeID;  // 用于作业的序号输出
-    int lineno;
-    NodeType nodeType;
+    int nodeID;  //用于作业的序号输出
+    int lineno;  //记录行号
+    NodeType nodeType; //类型
 
     TreeNode* child = nullptr;  //一个孩子，其他孩子表现为此孩子的兄弟
     TreeNode* sibling = nullptr;  //兄弟
@@ -49,12 +49,12 @@ public:
 public:
     OperatorType optype;  // 如果是表达式
     Type* type;  // 变量、类型、表达式结点，有类型。
-    StmtType stype;
-    int int_val;
-    char ch_val;
-    bool b_val;
-    string str_val;
-    string var_name;
+    StmtType stype; //表达式类型
+    int int_val;  //整型值数值
+    char ch_val;  //char类型数值
+    bool b_val;   //bool类型数值
+    string str_val;  //string类型数值
+    string var_name;  //字符串名字
 public:
     static string nodeType2String (NodeType type);
     static string opType2String (OperatorType type);
