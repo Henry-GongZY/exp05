@@ -32,11 +32,11 @@ public:
     int lineno;
     NodeType nodeType;
 
-    TreeNode* child = nullptr;
-    TreeNode* sibling = nullptr;
+    TreeNode* child = nullptr;  //一个孩子，其他孩子表现为此孩子的兄弟
+    TreeNode* sibling = nullptr;  //兄弟
 
-    void addChild(TreeNode*);
-    void addSibling(TreeNode*);
+    void addChild(TreeNode*);   //添加孩子
+    void addSibling(TreeNode*);   //添加兄弟
     
     void printNodeInfo();
     void printChildrenId();
