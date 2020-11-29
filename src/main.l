@@ -34,6 +34,7 @@ IDENTIFIER [[:alpha:]_][[:alpha:][:digit:]_]*
 
 "if" return IF;
 "else" return ELSE;
+"for" return FOR;
 "int" return T_INT;
 "bool" return T_BOOL;
 "char" return T_CHAR;
@@ -54,9 +55,23 @@ IDENTIFIER [[:alpha:]_][[:alpha:][:digit:]_]*
 
 "return" {
     TreeNode* node = new TreeNode(lineno, NODE_STMT);
-    yylval = node;
     node->stype = STMT_RETURN;
+    yylval = node;
     return RETURN;
+}
+
+"printf" {
+    TreeNode* node = new TreeNode(lineno, NODE_STMT);
+    node->stype = STMT_PRINTF;
+    yylval = node;
+    return PRINTF;
+}
+
+"scanf" {
+    TreeNode* node = new TreeNode(lineno, NODE_STMT);
+    node->stype = STMT_SCANF;
+    yylval = node;
+    return SCANF;
 }
 
 "+" {
@@ -131,64 +146,64 @@ IDENTIFIER [[:alpha:]_][[:alpha:][:digit:]_]*
 
 {BT} {
     TreeNode* node = new TreeNode(lineno, NODE_EXPR);
-    yylval = node;
     node->optype = OP_BT;
+    yylval = node;
     return BT;
 }
 
 {ST} {
     TreeNode* node = new TreeNode(lineno, NODE_EXPR);
-    yylval = node;
     node->optype = OP_ST;
+    yylval = node;
     return ST;
 }
 
 {EQ} {
     TreeNode* node = new TreeNode(lineno, NODE_EXPR);
-    yylval = node;
     node->optype = OP_EQ;
+    yylval = node;
     return EQ;
 }
 
 {BEQ} {
     TreeNode* node = new TreeNode(lineno, NODE_EXPR);
-    yylval = node;
     node->optype = OP_BEQ;
+    yylval = node;
     return BEQ;
 }
 
 {SEQ} {
     TreeNode* node = new TreeNode(lineno, NODE_EXPR);
-    yylval = node;
     node->optype = OP_SEQ;
+    yylval = node;
     return SEQ;
 }
 
 {NEQ} {
     TreeNode* node = new TreeNode(lineno, NODE_EXPR);
-    yylval = node;
     node->optype = OP_NEQ;
+    yylval = node;
     return NEQ;
 }
 
 {LG_AND} {
     TreeNode* node = new TreeNode(lineno, NODE_EXPR);
-    yylval = node;
     node->optype = OP_LG_AND;
+    yylval = node;
     return LG_AND;
 }
 
 {LG_OR} {
     TreeNode* node = new TreeNode(lineno, NODE_EXPR);
-    yylval = node;
     node->optype = OP_LG_OR;
+    yylval = node;
     return LG_OR;
 }
 
 {LG_NOT} {
     TreeNode* node = new TreeNode(lineno, NODE_EXPR);
-    yylval = node;
     node->optype = OP_LG_NOT;
+    yylval = node;
     return LG_NOT;
 }
 

@@ -6,15 +6,38 @@
     int yylex();
     int yyerror( char const * );
 %}
-%token T_CHAR T_INT T_STRING T_BOOL 
+%token T_CHAR T_INT T_STRING T_BOOL T_DOUBLE 
 
-%token LOP_ASSIGN 
+%token LOP_ASSIGN PLUS_ASSIGN MINUS_ASSIGN MULTI_ASSIGN DIVID_ASSIGN MOD_ASSIGN
 
-%token SEMICOLON
+%token SEMICOLON LBRACE RBRACE LPAREN RPAREN
 
-%token IDENTIFIER INTEGER CHAR BOOL STRING
+%token IDENTIFIER INTEGER CHAR BOOL STRING DOUBLE
+
+%token PLUS MINUS MULTI DIVIDE MOD SELFP SELFM AND OR NOT EQ
+
+%token BT ST BEQ SEQ NEQ LG_AND LG_OR LG_NOT UMINUS
+
+%token FOR MAIN IF ELSE WHILE RETURN
+
+%token PRINTF SCANF
+
+%token EOL
 
 %left LOP_EQ
+%left LG_OR
+%left LG_AND
+%left OR
+%left XOR
+%left AND
+%left EQ NEQ
+%left BT ST BEQ SEQ
+%left SHIFT_LEFT SHIFT_RIGHT
+%left PLUS MINUS
+%left MULTI DIVIDE MOD
+%left NOT LG_NOT
+%left UMINUS
+%left SELFP SELFM
 
 %%
 
@@ -24,15 +47,20 @@ program
 statements
 :  statement {$$=$1;}
 |  statements statement {$$=$1; $$->addSibling($2);}
+|  LBRACE statement RBRACE { $$ = $2; }
 ;
 
 statement
-: SEMICOLON  {$$ = new TreeNode(lineno, NODE_STMT); $$->stype = STMT_SKIP;}
+: T MAIN LPAREN RPAREN statements {
+    TreeNode* node = new TreeNode($1->lineno,NODE_STMT);
+    node->stype = 
+}
+| SEMICOLON  {$$ = new TreeNode(lineno, NODE_STMT); $$->stype = STMT_SKIP;}
 | declaration SEMICOLON {$$ = $1;}
 ;
 
 declaration
-: T IDENTIFIER LOP_ASSIGN expr{  // declare and init
+: T IDENTIFIER LOP_ASSIGN expr{  //声明并初始化
     TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
     node->stype = STMT_DECL;
     node->addChild($1);

@@ -47,14 +47,14 @@ public:
     void genNodeId();
 
 public:
-    OperatorType optype;  // 如果是表达式
-    Type* type;  // 变量、类型、表达式结点，有类型。
+    OperatorType optype;  // 运算符操作类型
+    Type* type;
     StmtType stype; //表达式类型
     int int_val;  //整型值数值
     char ch_val;  //char类型数值
     bool b_val;   //bool类型数值
     string str_val;  //string类型数值
-    string var_name;  //字符串名字
+    string var_name;  //变量名
 public:
     static string nodeType2String (NodeType type);
     static string opType2String (OperatorType type);
