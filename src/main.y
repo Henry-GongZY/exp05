@@ -10,7 +10,7 @@
 
 %token LOP_ASSIGN PLUS_ASSIGN MINUS_ASSIGN MULTI_ASSIGN DIVID_ASSIGN MOD_ASSIGN
 
-%token SEMICOLON LBRACE RBRACE LPAREN RPAREN
+%token SEMICOLON COMMA LBRACE RBRACE LPAREN RPAREN
 
 %token IDENTIFIER INTEGER CHAR BOOL STRING DOUBLE
 
@@ -53,14 +53,28 @@ statements
 statement
 : T MAIN LPAREN RPAREN statements {
     TreeNode* node = new TreeNode($1->lineno,NODE_STMT);
-    node->stype = 
+    node->stype = STMT_SCOPE;
+    node->addChild($5);
+    $2->addChild($1);
+    $2->addChild(node);
+    $$ = $2;
 }
-| SEMICOLON  {$$ = new TreeNode(lineno, NODE_STMT); $$->stype = STMT_SKIP;}
+| if_stmt {$$ = $1;} 
+| if_else_stmt {$$ = $1;}
+| for_stmt {$$ = $1;}
+| while_stmt {$$ = $1;}
+| scanf_stmt {$$ = $1;}
+| printf_stmt {$$ = $1;}
+| assign_stmt {$$ = $1;}
+| SEMICOLON  {
+    $$ = new TreeNode(lineno, NODE_STMT); 
+    $$->stype = STMT_SKIP;
+}
 | declaration SEMICOLON {$$ = $1;}
 ;
 
 declaration
-: T IDENTIFIER LOP_ASSIGN expr{  //声明并初始化
+: T IDENTIFIER LOP_ASSIGN expr{ 
     TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
     node->stype = STMT_DECL;
     node->addChild($1);
@@ -68,7 +82,7 @@ declaration
     node->addChild($4);
     $$ = node;   
 } 
-| T IDENTIFIER {
+| T IDLIST {
     TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
     node->stype = STMT_DECL;
     node->addChild($1);
@@ -76,6 +90,14 @@ declaration
     $$ = node;   
 }
 ;
+
+IDLIST
+: IDENTIFIER COMMA IDLIST {
+    
+}
+| IDENTIFIER {
+
+}
 
 expr
 : IDENTIFIER {

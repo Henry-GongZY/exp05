@@ -46,6 +46,7 @@ IDENTIFIER [[:alpha:]_][[:alpha:][:digit:]_]*
 "/=" return DIVID_ASSIGN;
 "%=" return MOD_ASSIGN;
 ";" return  SEMICOLON;
+"," return COMMA;
 
 "main" {
     TreeNode* node = new TreeNode(lineno, NODE_MAIN);

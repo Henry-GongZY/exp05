@@ -34,7 +34,7 @@ void TreeNode::genNodeId() {
 
 void TreeNode::printNodeInfo() {
     string TYPE = "";
-    cout<<"lno@"<<this->lineno<<"   "<<"@"<<this->nodeID<<"   "<<TYPE<<
+    
 }
 
 void TreeNode::printChildrenId() {

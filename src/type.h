@@ -21,7 +21,7 @@ public:
     ValueType type;
     Type(ValueType valueType);
 public:  
-    /* 如果你要设计复杂类型系统的话，可以修改这一部分 */
+    
     ValueType* childType; // for union or struct
     ValueType* paramType, retType; // for function
     

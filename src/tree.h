@@ -21,8 +21,10 @@ enum OperatorType
 };
 
 enum StmtType {
-    STMT_SKIP,
-    STMT_DECL,
+    STMT_SKIP,  //跳过
+    STMT_DECL,  //声明
+    STMT_SCOPE, //作用域
+    STMT_
 }
 ;
 
