@@ -23,7 +23,7 @@ void TreeNode::addSibling(TreeNode* sibling){
 
 TreeNode::TreeNode(int lineno, NodeType type) {
     this->lineno = lineno;
-    this->type = type;
+    this->nodeType = type;
     genNodeId();
 }
 
@@ -71,4 +71,26 @@ string TreeNode::sType2String(StmtType type) {
 
 string TreeNode::nodeType2String (NodeType type){
     return "<>";
+}
+
+TreeNode* TreeNode::expr_addChild(TreeNode* node1, TreeNode* node2, TreeNode* node3){
+    TreeNode* curr = node2;
+    curr->addChild(node1);
+    if(node3 != nullptr){
+        curr->addChild(node3);
+    }
+    return curr;
+}
+
+TreeNode *for_addChild(int lineno,TreeNode *node1, TreeNode *node2, TreeNode *node3, TreeNode *node4){
+    TreeNode *node = new TreeNode(lineno, NODE_STMT);
+    node->stype = STMT_FOR;
+    TreeNode* node2 = new TreeNode(lineno, NODE_STMT);
+    node2->stype = STMT_SCOPE;
+    node2->addChild(node1);
+    node2->addChild(node2);
+    node2->addChild(node3);
+    node2->addChild(node4);
+    node->addChild(node2);
+    return node;
 }

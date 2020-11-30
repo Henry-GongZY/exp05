@@ -24,7 +24,7 @@ enum StmtType {
     STMT_SKIP,  //跳过
     STMT_DECL,  //声明
     STMT_SCOPE, //作用域
-    STMT_
+    STMT_FOR
 }
 ;
 
@@ -64,6 +64,8 @@ public:
 
 public:
     TreeNode(int lineno, NodeType type);
+    TreeNode *expr_addChild(TreeNode*, TreeNode*, TreeNode*);
+    TreeNode *for_addChild(TreeNode*, TreeNode*, TreeNode*, TreeNode*, TreeNode*);
 };
 
 #endif
