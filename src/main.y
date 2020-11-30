@@ -73,6 +73,13 @@ statement
 | declaration SEMICOLON {$$ = $1;}
 ;
 
+if_else_stmt
+: if_stmt else_stmt {$1->addSibling($2); $$ = $1;}
+;
+
+if_stmt
+: IF LPARAM
+
 declaration
 : T IDENTIFIER LOP_ASSIGN expr{ 
     TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
@@ -93,11 +100,11 @@ declaration
 
 IDLIST
 : IDENTIFIER COMMA IDLIST {
-    
+    $1->addSibling($3);
+    $$ = $1;
 }
-| IDENTIFIER {
-
-}
+| IDENTIFIER { $$ = $1; }
+;
 
 expr
 : IDENTIFIER {
