@@ -85,12 +85,12 @@ TreeNode* TreeNode::expr_addChild(TreeNode* node1, TreeNode* node2, TreeNode* no
 TreeNode *for_addChild(int lineno,TreeNode *node1, TreeNode *node2, TreeNode *node3, TreeNode *node4){
     TreeNode *node = new TreeNode(lineno, NODE_STMT);
     node->stype = STMT_FOR;
-    TreeNode* node2 = new TreeNode(lineno, NODE_STMT);
-    node2->stype = STMT_SCOPE;
-    node2->addChild(node1);
-    node2->addChild(node2);
-    node2->addChild(node3);
-    node2->addChild(node4);
-    node->addChild(node2);
+    TreeNode* node_scope = new TreeNode(lineno, NODE_STMT);
+    node_scope->stype = STMT_SCOPE;
+    node_scope->addChild(node1);
+    node_scope->addChild(node2);
+    node_scope->addChild(node3);
+    node_scope->addChild(node4);
+    node->addChild(node_scope);
     return node;
 }

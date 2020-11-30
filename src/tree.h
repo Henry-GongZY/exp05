@@ -17,14 +17,47 @@ enum NodeType
 
 enum OperatorType
 {
-    OP_EQ,  // ==
+    OP_PLUS,
+    OP_MINUS,
+    OP_MULTI,
+    OP_DIVID,
+    OP_NOD,
+    OP_AND,
+    OP_OR,
+    OP_NOT,
+    OP_SELFP,
+    OP_SELFM,
+    OP_EQ,
+    OP_BT,
+    OP_ST,
+    OP_BEQ,
+    OP_SEQ,
+    OP_NEQ,
+    OP_LG_AND,
+    OP_LG_OR,
+    OP_LG_NOT
 };
 
 enum StmtType {
     STMT_SKIP,  //跳过
     STMT_DECL,  //声明
+    STMT_WHILE,
+    STMT_FUNC_DECL,
+    STMT_DECL,
+    STMT_FUNC_DEF,
+    STMT_FUNC_CALL,
+    STMT_IF,
     STMT_SCOPE, //作用域
-    STMT_FOR
+    STMT_ELSE,
+    STMT_ASSIGN,
+    STMT_PLUS_ASSIGN,
+    STMT_MINUS_ASSIGN,
+    STMT_MULTI_ASSIGN,
+    STMT_DIVID_ASSIGN,
+    STMT_MOD_ASSIGN,
+    STMT_PRINTF,
+    STMT_SCANF,
+    STMT_RETURN
 }
 ;
 
@@ -55,6 +88,7 @@ public:
     int int_val;  //整型值数值
     char ch_val;  //char类型数值
     bool b_val;   //bool类型数值
+    double d_val; //双精度浮点类型数值
     string str_val;  //string类型数值
     string var_name;  //变量名
 public:
@@ -64,8 +98,8 @@ public:
 
 public:
     TreeNode(int lineno, NodeType type);
-    TreeNode *expr_addChild(TreeNode*, TreeNode*, TreeNode*);
-    TreeNode *for_addChild(TreeNode*, TreeNode*, TreeNode*, TreeNode*, TreeNode*);
+    TreeNode *expr_addChild(TreeNode*, TreeNode*, TreeNode*);  //简化表达式的插入
+    TreeNode *for_addChild(TreeNode*, TreeNode*, TreeNode*, TreeNode*, TreeNode*);  //简化for循环的插入
 };
 
 #endif
