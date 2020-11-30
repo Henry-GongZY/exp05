@@ -47,13 +47,13 @@ program
 statements
 :  statement {$$=$1;}
 |  statements statement {$$=$1; $$->addSibling($2);}
-|  LBRACE statement RBRACE { $$ = $2; }
+|  LBRACE statements RBRACE { $$ = $2; }
 ;
 
 statement
 : T MAIN LPAREN RPAREN statements {
     TreeNode* node = new TreeNode($1->lineno,NODE_STMT);
-    node->stype = STMT_SCOPE;
+    node->stypSCOPE;
     node->addChild($5);
     $2->addChild($1);
     $2->addChild(node);
@@ -63,10 +63,10 @@ statement
 | if_else_stmt {$$ = $1;}
 | for_stmt {$$ = $1;}
 | while_stmt {$$ = $1;}
-| function_declaration {$$=$1;}
-| function_definition {$$=$1;}
-| function_call {$$=$1;}
-| function_return {$$=$1;}
+| function_declaration {$$=$1;}//函数声明
+| function_definition {$$=$1; }//函数定义
+| function_call {$$=$1; }//函数调用
+| function_return {$$=$1; }//函数返回
 | scanf_stmt {$$ = $1;}
 | printf_stmt {$$ = $1;}
 | assign_stmt {$$ = $1;}
@@ -76,6 +76,164 @@ statement
 }
 | declaration SEMICOLON {$$ = $1;}
 ;
+
+while_stmt
+: WHILE LPAREN expr RPAREN statements {
+    TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
+    node->stype = STMT_WHILE;
+    TreeNode* node_scope = new TreeNode($1->lineno, NODE_STMT);
+    node_scope->stypSCOPE;
+    node_scope->addChild($3);
+    node_scope->addChild($5);
+    node->addChild(node_scope);
+    $$ = node;}
+;
+
+for_stmt
+: FOR LPAREN expr SEMICOLON expr SEMICOLON expr RPAREN statements {
+    TreeNode* node = for_addChild($1->lineno, $3, $5, $7, $9);
+    $$ = node;}
+| FOR LPAREN declaration SEMICOLON expr SEMICOLON expr RPAREN statements {
+    TreeNode* node = for_addChild($1->lineno, $3, $5, $7, $9);
+    $$ = node;}
+| FOR LPAREN SEMICOLON expr SEMICOLON expr RPAREN statements {
+    TreeNode* node = for_addChild($1->lineno, nullptr, $4, $6, $8);
+    $$ = node;}
+| FOR LPAREN expr SEMICOLON SEMICOLON expr RPAREN statements {
+    TreeNode* node = for_addChild($1->lineno, $3, nullptr, $6, $8);
+    $$ = node;}
+| FOR LPAREN expr SEMICOLON expr SEMICOLON RPAREN statements {
+    TreeNode* node = for_addChild($1->lineno, $3, $5, nullptr, $8);
+    $$ = node;}
+| FOR LPAREN SEMICOLON SEMICOLON expr RPAREN statements {
+    TreeNode* node = for_addChild($1->lineno, nullptr, nullptr, $5, $7);
+    $$ = node;}
+| FOR LPAREN SEMICOLON expr SEMICOLON RPAREN statements {
+    TreeNode* node = for_addChild($1->lineno, nullptr, $4, nullptr, $7);
+    $$ = node;}
+| FOR LPAREN expr SEMICOLON SEMICOLON RPAREN statements {
+    TreeNode* node = for_addChild($1->lineno, $3, nullptr, nullptr, $7);
+    $$ = node;}
+| FOR LPAREN SEMICOLON SEMICOLON RPAREN statements {
+    TreeNode* node = for_addChild($1->lineno, nullptr, nullptr, nullptr, $6);
+    $$ = node;}
+;
+
+function_declaration
+: T IDENTIFIER LPAREN function_declaration_idlist RPAREN SEMICOLON {
+    TreeNode* node = new TreeNode($2->lineno, NODE_STMT);
+    node->stype = STMT_FUNC_DECL;
+    node->addChild($1);
+    node->addChild($2);
+    node->addChild($4);
+    $$ = node;
+}
+| T IDENTIFIER LPAREN RPAREN SEMICOLON {
+    TreeNode* node = new TreeNode($2->lineno, NODE_STMT);
+    node->stype = STMT_FUNC_DECL;
+    node->addChild($1);
+    node->addChild($2);
+    $$ = node;
+}
+;
+
+function_declaration_idlist
+: function_declaration_id {$$=$1;}
+| function_declaration_id COMMA function_declaration_idlist {$1->addSibling($3); $$=$1;}
+;
+
+function_declaration_id
+: T IDENTIFIER LOP_ASSIGN expr{  // declare and init
+    TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
+    node->stype = STMT_DECL;
+    node->addChild($1);
+    node->addChild($2);
+    node->addChild($4);
+    $$ = node;
+} 
+| T IDENTIFIER {
+    TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
+    node->stype = STMT_DECL;
+    node->addChild($1);
+    node->addChild($2);
+    $$ = node;}
+| T {$$=$1;}
+;
+
+function_definition
+: T IDENTIFIER LPAREN function_definition_idlist RPAREN statements {
+    TreeNode* node = new TreeNode($2->lineno, NODE_STMT);
+    node->stype = STMT_FUNC_DEF;
+    TreeNode* node_scope = new TreeNode($1->lineno, NODE_STMT);
+    node_scope->stypSCOPE;
+    node->addChild($1);
+    node->addChild($2);
+    node_scope->addChild($4);
+    node_scope->addChild($6);
+    node->addChild(node_scope);
+    $$ = node;}
+| T IDENTIFIER LPAREN RPAREN statements {
+    TreeNode* node = new TreeNode($2->lineno, NODE_STMT);
+    node->stype = STMT_FUNC_DEF;
+    TreeNode* node_scope = new TreeNode($1->lineno, NODE_STMT);
+    node_scope->stypSCOPE;
+    node->addChild($1);
+    node->addChild($2);
+    node_scope->addChild($5);
+    node->addChild(node_scope);
+    $$ = node;
+}
+;
+
+function_definition_idlist
+: function_definition_id {$$=$1;}
+| function_definition_id COMMA function_definition_idlist { $1->addSibling($3); $$=$1;}
+;
+
+function_definition_id
+: T IDENTIFIER LOP_ASSIGN expr{
+    TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
+    node->stype = STMT_DECL;
+    node->addChild($1);
+    node->addChild($2);
+    node->addChild($4);
+    $$ = node;} 
+| T IDENTIFIER {
+    TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
+    node->stype = STMT_DECL;
+    node->addChild($1);
+    node->addChild($2);
+    $$ = node;}
+;
+
+function_call
+: IDENTIFIER LPAREN function_call_idlist RPAREN SEMICOLON{
+    TreeNode* node = new TreeNode($1->lineno,MODE_STMT);
+    NODE->STYPE = STMT_FUNC_CALL;
+    node->addChild($1);
+    node->addChild($3);
+    $$ = node;
+}
+| IDENTIFIER LPAREN RPAREN SEMICOLON{
+    TreeNode* node = new TreeNode($1->lineno,MODE_STMT);
+    NODE->STYPE = STMT_FUNC_CALL;
+    node->addChild($1);
+    $$ = node;
+}
+;
+
+function_call_idlist
+: function_call_id { $$=$1; }
+| function_call_id COMMA function_call_idlist{ $1->addSibling($3); $$=$1;}
+;
+
+function_call_id
+: expr {$$ = $1; }
+;
+
+function_return
+: RETURN SEMICOLON {$$ = $1;}
+| RETURN expr SEMICOLON { $1->addSibling($2); $$=$1; }
 
 if_else_stmt
 : if_stmt else_stmt {$1->addSibling($2); $$ = $1;}
@@ -89,22 +247,34 @@ if_stmt
     node->addChild($3);
     //开辟作用域空间，并将之链接到if下
     Treenode* node_scope = new TreeNode($1->lineno,NODE_STMT);
-    node_scope->stype = STMT_scope;
+    node_scope->stype = STMT_SCOPE;
     node_scope->addchild($5);
     node->addChild(node_scope);
     $$ = node;
 }
+;
 
 else_stmt
 : ELSE statements {
     TreeNode* node = new TreeNode($1->listno,NODE_STMT);
     node->stype = STMT_ELSE;
     Treenode* node_scope = new TreeNode($1->lineno,NODE_STMT);
-    node_scope->stype = STMT_scope;
+    node_scope->stypSCOPE;
     node_scope->addchild($2);
     node->addChild(node_scope);
     $$ = node;
 }
+;
+
+scanf_stmt
+: SCANF LPAREN function_call_idlist RPAREN SEMICOLON {$1->addChild($3); $$=$1;}
+| SCANF LPAREN RPAREN SEMICOLON {$$=$1;}
+;
+
+printf_stmt
+: PRINTF LPAREN function_call_idlist RPAREN SEMICOLON {$1->addChild($3); $$=$1;}
+| PRINTF LPAREN RPAREN SEMICOLON {$$=$1;}
+;
 
 declaration
 : T IDENTIFIER LOP_ASSIGN expr{ 
@@ -171,42 +341,12 @@ assign_stmt
     $$ = node;}
 ;
 
-for_stmt
-: FOR LPAREN expr SEMICOLON expr SEMICOLON expr RPAREN statements {
-    TreeNode* node = for_addChild($1->lineno, $3, $5, $7, $9);
-    $$ = node;}
-| FOR LPAREN declaration SEMICOLON expr SEMICOLON expr RPAREN statements {
-    TreeNode* node = for_addChild($1->lineno, $3, $5, $7, $9);
-    $$ = node;}
-| FOR LPAREN SEMICOLON expr SEMICOLON expr RPAREN statements {
-    TreeNode* node = for_addChild($1->lineno, nullptr, $4, $6, $8);
-    $$ = node;}
-| FOR LPAREN expr SEMICOLON SEMICOLON expr RPAREN statements {
-    TreeNode* node = for_addChild($1->lineno, $3, nullptr, $6, $8);
-    $$ = node;}
-| FOR LPAREN expr SEMICOLON expr SEMICOLON RPAREN statements {
-    TreeNode* node = for_addChild($1->lineno, $3, $5, nullptr, $8);
-    $$ = node;}
-| FOR LPAREN SEMICOLON SEMICOLON expr RPAREN statements {
-    TreeNode* node = for_addChild($1->lineno, nullptr, nullptr, $5, $7);
-    $$ = node;}
-| FOR LPAREN SEMICOLON expr SEMICOLON RPAREN statements {
-    TreeNode* node = for_addChild($1->lineno, nullptr, $4, nullptr, $7);
-    $$ = node;}
-| FOR LPAREN expr SEMICOLON SEMICOLON RPAREN statements {
-    TreeNode* node = for_addChild($1->lineno, $3, nullptr, nullptr, $7);
-    $$ = node;}
-| FOR LPAREN SEMICOLON SEMICOLON RPAREN statements {
-    TreeNode* node = for_addChild($1->lineno, nullptr, nullptr, nullptr, $6);
-    $$ = node;}
-;
-
 expr
 : LPAREN expr RPAREN  { $$ = $2; }
 | expr PLUS expr	{ $$ = expr_addChild($1, $2, $3); }
 | expr MINUS expr	{ $$ = expr_addChild($1, $2, $3); }
 | expr MULTI expr	{ $$ = expr_addChild($1, $2, $3); }
-| expr DIVID expr	{ $$ = expr_addChild($1, $2, $3); }
+| expr DIVIDE expr	{ $$ = expr_addChild($1, $2, $3); }
 | expr MOD expr	    { $$ = expr_addChild($1, $2, $3); }
 | expr SELFM        { $$ = expr_addChild($1, $2, NULL); }
 | expr SELFP        { $$ = expr_addChild($1, $2, NULL); }
@@ -234,6 +374,7 @@ expr
 T: T_INT {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_INT;} 
 | T_CHAR {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_CHAR;}
 | T_BOOL {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_BOOL;}
+| T_STRING {$$ = new TreeNode(lineno,NODETYPE); $$->type = TYPE_STRING;}
 | T_DOUBLE {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_DOUBLE;}
 | T_VOID {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_VOID;}
 ;

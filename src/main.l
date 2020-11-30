@@ -4,7 +4,7 @@
 #include "main.tab.h"  // yacc header
 int lineno=1;
 %}
-BLOCKCOMMENT \/\*([^\*^\/]*|[\*^\/*]*|[^\**\/]*)*\*\/
+BLOCKCOMMENT \/\*([^\*^\/]*|[\*^\/\*]*|[^\**\/]*)*\*\/
 LINECOMMENT \/\/[^\n]*
 EOL	(\r\n|\r|\n)
 WHILTESPACE [[:blank:]]
@@ -46,7 +46,7 @@ IDENTIFIER [[:alpha:]_][[:alpha:][:digit:]_]*
 "*=" return MULTI_ASSIGN;
 "/=" return DIVID_ASSIGN;
 "%=" return MOD_ASSIGN;
-";" return  SEMICOLON;
+";" return SEMICOLON;
 "," return COMMA;
 
 "main" {
