@@ -4,8 +4,8 @@ TARGET := ./bin/main
 
 all: run
 
-src/main.lex.yy.c: src/main.lex
-	 flex --noyywrap -o src/main.lex.yy.cpp  src/main.lex 
+src/main.lex.yy.c: src/main.l
+	 flex --noyywrap -o src/main.lex.yy.cpp  src/main.l
 
 src/main.tab.c: src/main.y
 	bison -o src/main.tab.cpp --defines=src/main.tab.h -v src/main.y

@@ -1,5 +1,4 @@
 #include "tree.h"
-
 int nodeid;
 
 void TreeNode::addChild(TreeNode* child) {
@@ -32,19 +31,65 @@ void TreeNode::genNodeId() {
     nodeid++;
 }
 
-void TreeNode::printNodeInfo() {
+void TreeNode::printNodeInfo(TreeNode* t) {
     //具体逻辑是根据不同的输入选择不同的函数进行字符串化输出
     string type = "";
-    string nodetype = "";
-    
+    string const_type;
+    switch (t->nodeType){
+        case NODE_STMT:
+            type = sType2String(t->stype);
+            break;
+        case NODE_EXPR:
+            type = "OP: " + opType2String(t->optype);
+            break;
+        case NODE_TYPE:
+            type = t->type->getTypeInfo();
+            break;
+        case NODE_VAR:
+            type = "var name: " + t->var_name;
+            break;
+        case NODE_CONST:
+            const_type = t->type->getTypeInfo();
+            if(const_type == "int"){
+                type = to_string(t->int_val);
+            }
+            else if(const_type == "string"){
+                type = t->str_val;
+            }
+            else if(const_type == "bool"){
+                type = to_string(t->b_val);
+            }
+            else if(const_type == "double"){
+                type = to_string(t->d_val);
+            }
+            else if(const_type == "char"){
+                type = to_string(t->ch_val);
+            }
+            type = const_type+":"+type;
+            break;
+        default:
+            break;
+    }
+
+    cout << "lno@" << t->lineno << "  "<< "@" << t->nodeID << "  " << nodeType2String(t->nodeType) << "  " << type << "  children:[";
+    t->printChildrenId();
+    cout << "]" << endl;
 }
 
 void TreeNode::printChildrenId() {
-
+    if(this->child!=nullptr){
+        TreeNode* child = this->child;
+        while(child!=nullptr){
+            cout<<"@"<<child->nodeID<<" ";
+            child = child->sibling;
+        }
+    }
 }
 
 void TreeNode::printAST() {
-
+    printNodeInfo(this);
+    for (TreeNode *t2 = this->child; t2; t2 = t2->sibling)
+        t2->printAST();
 }
 
 
@@ -131,7 +176,6 @@ string TreeNode::sType2String(StmtType type) {
     }
 }
 
-
 string TreeNode::nodeType2String (NodeType type){
     switch(type){
         case NODE_CONST:
@@ -200,7 +244,7 @@ string TreeNode::opType2String (OperatorType type) {
     }
 }
 
-TreeNode* TreeNode::expr_addChild(TreeNode* node1, TreeNode* node2, TreeNode* node3){
+TreeNode* expr_addChild(TreeNode* node1, TreeNode* node2, TreeNode* node3){
     TreeNode* curr = node2;
     curr->addChild(node1);
     if(node3 != nullptr){

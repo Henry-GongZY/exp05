@@ -73,7 +73,7 @@ public:
     void addChild(TreeNode*);   //添加孩子
     void addSibling(TreeNode*);   //添加兄弟
     
-    void printNodeInfo();
+    void printNodeInfo(TreeNode*);
     void printChildrenId();
 
     void printAST(); // 先输出自己 + 孩子们的id；再依次让每个孩子输出AST。
@@ -101,8 +101,9 @@ public:
 
 public:
     TreeNode(int lineno, NodeType type);
-    TreeNode *expr_addChild(TreeNode*, TreeNode*, TreeNode*);  //简化表达式的插入
-    TreeNode *for_addChild(TreeNode*, TreeNode*, TreeNode*, TreeNode*, TreeNode*);  //简化for循环的插入，加入作用域支持
 };
+
+TreeNode *expr_addChild(TreeNode*, TreeNode*, TreeNode*);  //简化表达式的插入
+TreeNode *for_addChild(int, TreeNode*, TreeNode*, TreeNode*, TreeNode*);  //简化for循环的插入，加入作用域支持
 
 #endif

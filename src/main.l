@@ -39,7 +39,7 @@ IDENTIFIER [[:alpha:]_][[:alpha:][:digit:]_]*
 "bool" return T_BOOL;
 "char" return T_CHAR;
 "double" return T_DOUBLE;
-"void" return T_VOID
+"void" return T_VOID;
 "=" return LOP_ASSIGN;
 "+=" return PLUS_ASSIGN;
 "-=" return MINUS_ASSIGN;
@@ -48,6 +48,7 @@ IDENTIFIER [[:alpha:]_][[:alpha:][:digit:]_]*
 "%=" return MOD_ASSIGN;
 ";" return SEMICOLON;
 "," return COMMA;
+"while" return WHILE;
 
 "main" {
     TreeNode* node = new TreeNode(lineno, NODE_MAIN);
@@ -101,7 +102,7 @@ IDENTIFIER [[:alpha:]_][[:alpha:][:digit:]_]*
     TreeNode* node = new TreeNode(lineno,NODE_EXPR);
     node->optype = OP_DIVID;
     yylval = node;
-    return DIVID;
+    return DIVIDE;
 }
 
 "%" {

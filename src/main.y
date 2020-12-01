@@ -53,7 +53,7 @@ statements
 statement
 : T MAIN LPAREN RPAREN statements {
     TreeNode* node = new TreeNode($1->lineno,NODE_STMT);
-    node->stype = NODE_SCOPE;
+    node->stype = STMT_SCOPE;
     node->addChild($5);
     $2->addChild($1);
     $2->addChild(node);
@@ -83,7 +83,7 @@ while_stmt
     TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
     node->stype = STMT_WHILE;
     TreeNode* node_scope = new TreeNode($1->lineno, NODE_STMT);
-    node_scope->stypSCOPE;
+    node_scope->stype = STMT_SCOPE;
     node_scope->addChild($3);
     node_scope->addChild($5);
     node->addChild(node_scope);
@@ -171,7 +171,7 @@ function_definition
     TreeNode* node = new TreeNode($2->lineno, NODE_STMT);
     node->stype = STMT_FUNC_DEF;
     TreeNode* node_scope = new TreeNode($1->lineno, NODE_STMT);
-    node_scope->stypSCOPE;
+    node_scope->stype = STMT_SCOPE;
     node->addChild($1);
     node->addChild($2);
     node_scope->addChild($4);
@@ -182,7 +182,7 @@ function_definition
     TreeNode* node = new TreeNode($2->lineno, NODE_STMT);
     node->stype = STMT_FUNC_DEF;
     TreeNode* node_scope = new TreeNode($1->lineno, NODE_STMT);
-    node_scope->stypSCOPE;
+    node_scope->stype = STMT_SCOPE;
     node->addChild($1);
     node->addChild($2);
     node_scope->addChild($5);
@@ -217,15 +217,15 @@ function_definition_id
 //函数调用
 function_call
 : IDENTIFIER LPAREN function_call_idlist RPAREN SEMICOLON{
-    TreeNode* node = new TreeNode($1->lineno,MODE_STMT);
-    NODE->STYPE = STMT_FUNC_CALL;
+    TreeNode* node = new TreeNode($1->lineno,NODE_STMT);
+    node->stype = STMT_FUNC_CALL;
     node->addChild($1);
     node->addChild($3);
     $$ = node;
 }
 | IDENTIFIER LPAREN RPAREN SEMICOLON{
-    TreeNode* node = new TreeNode($1->lineno,MODE_STMT);
-    NODE->STYPE = STMT_FUNC_CALL;
+    TreeNode* node = new TreeNode($1->lineno,NODE_STMT);
+    node->stype = STMT_FUNC_CALL;
     node->addChild($1);
     $$ = node;
 }
@@ -257,9 +257,9 @@ if_stmt
     node->stype = STMT_IF;
     node->addChild($3);
     //开辟作用域空间，并将之链接到if下
-    Treenode* node_scope = new TreeNode($1->lineno,NODE_STMT);
+    TreeNode* node_scope = new TreeNode($1->lineno,NODE_STMT);
     node_scope->stype = STMT_SCOPE;
-    node_scope->addchild($5);
+    node_scope->addChild($5);
     node->addChild(node_scope);
     $$ = node;
 }
@@ -267,11 +267,11 @@ if_stmt
 
 else_stmt
 : ELSE statements {
-    TreeNode* node = new TreeNode($1->listno,NODE_STMT);
+    TreeNode* node = new TreeNode($1->lineno,NODE_STMT);
     node->stype = STMT_ELSE;
-    Treenode* node_scope = new TreeNode($1->lineno,NODE_STMT);
-    node_scope->stypSCOPE;
-    node_scope->addchild($2);
+    TreeNode* node_scope = new TreeNode($1->lineno,NODE_STMT);
+    node_scope->stype = STMT_SCOPE;
+    node_scope->addChild($2);
     node->addChild(node_scope);
     $$ = node;
 }
@@ -378,8 +378,8 @@ expr
 | expr NEQ expr     { $$ = expr_addChild($1, $2, $3); }
 | expr LG_AND expr  { $$ = expr_addChild($1, $2, $3); }
 | expr LG_OR expr   { $$ = expr_addChild($1, $2, $3); }
-| LG_NOT expr       { $$ = expNode($2, $1, NULL); }
-| MINUS expr %prec UMINUS   { $$ = expNode($1, $2, NULL); }
+| LG_NOT expr       { $$ = expr_addChild($2, $1, NULL); }
+| MINUS expr %prec UMINUS   { $$ = expr_addChild($2, $1, NULL); }
 | IDENTIFIER     { $$ = $1;}
 | INTEGER        { $$ = $1;}
 | DOUBLE         { $$ = $1;}
@@ -391,7 +391,7 @@ expr
 T: T_INT {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_INT;} 
 | T_CHAR {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_CHAR;}
 | T_BOOL {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_BOOL;}
-| T_STRING {$$ = new TreeNode(lineno,NODETYPE); $$->type = TYPE_STRING;}
+| T_STRING {$$ = new TreeNode(lineno,NODE_TYPE); $$->type = TYPE_STRING;}
 | T_DOUBLE {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_DOUBLE;}
 | T_VOID {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_VOID;}
 ;
