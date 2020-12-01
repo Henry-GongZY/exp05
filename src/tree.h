@@ -65,7 +65,7 @@ struct TreeNode {
 public:
     int nodeID;  //用于作业的序号输出
     int lineno;  //记录行号
-    NodeType nodeType; //类型
+    NodeType nodeType; //节点类型
 
     TreeNode* child = nullptr;  //一个孩子，其他孩子表现为此孩子的兄弟
     TreeNode* sibling = nullptr;  //兄弟
@@ -82,14 +82,17 @@ public:
     void genNodeId();
 
 public:
+
     OperatorType optype;  // 运算符操作类型
     Type* type;     //常量类型     
     StmtType stype; //表达式类型
+
     int int_val;  //整型值数值
     char ch_val;  //char类型数值
     bool b_val;   //bool类型数值
     double d_val; //双精度浮点类型数值
     string str_val;  //string类型数值
+
     string var_name;  //变量名
 public:
     static string nodeType2String (NodeType type);

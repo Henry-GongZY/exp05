@@ -53,7 +53,7 @@ statements
 statement
 : T MAIN LPAREN RPAREN statements {
     TreeNode* node = new TreeNode($1->lineno,NODE_STMT);
-    node->stypSCOPE;
+    node->stype = NODE_SCOPE;
     node->addChild($5);
     $2->addChild($1);
     $2->addChild(node);
