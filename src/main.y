@@ -77,6 +77,7 @@ statement
 | declaration SEMICOLON {$$ = $1;}
 ;
 
+//while语句
 while_stmt
 : WHILE LPAREN expr RPAREN statements {
     TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
@@ -89,6 +90,7 @@ while_stmt
     $$ = node;}
 ;
 
+//for语句的不同情况
 for_stmt
 : FOR LPAREN expr SEMICOLON expr SEMICOLON expr RPAREN statements {
     TreeNode* node = for_addChild($1->lineno, $3, $5, $7, $9);
@@ -119,6 +121,7 @@ for_stmt
     $$ = node;}
 ;
 
+//函数声明
 function_declaration
 : T IDENTIFIER LPAREN function_declaration_idlist RPAREN SEMICOLON {
     TreeNode* node = new TreeNode($2->lineno, NODE_STMT);
@@ -137,11 +140,13 @@ function_declaration
 }
 ;
 
+//函数声明id列表
 function_declaration_idlist
 : function_declaration_id {$$=$1;}
 | function_declaration_id COMMA function_declaration_idlist {$1->addSibling($3); $$=$1;}
 ;
 
+//表中单个id
 function_declaration_id
 : T IDENTIFIER LOP_ASSIGN expr{  // declare and init
     TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
@@ -160,6 +165,7 @@ function_declaration_id
 | T {$$=$1;}
 ;
 
+//函数定义
 function_definition
 : T IDENTIFIER LPAREN function_definition_idlist RPAREN statements {
     TreeNode* node = new TreeNode($2->lineno, NODE_STMT);
@@ -185,11 +191,13 @@ function_definition
 }
 ;
 
+//函数定义id列表
 function_definition_idlist
 : function_definition_id {$$=$1;}
 | function_definition_id COMMA function_definition_idlist { $1->addSibling($3); $$=$1;}
 ;
 
+//函数定义单个id
 function_definition_id
 : T IDENTIFIER LOP_ASSIGN expr{
     TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
@@ -206,6 +214,7 @@ function_definition_id
     $$ = node;}
 ;
 
+//函数调用
 function_call
 : IDENTIFIER LPAREN function_call_idlist RPAREN SEMICOLON{
     TreeNode* node = new TreeNode($1->lineno,MODE_STMT);
@@ -231,10 +240,12 @@ function_call_id
 : expr {$$ = $1; }
 ;
 
+//函数返回
 function_return
 : RETURN SEMICOLON {$$ = $1;}
 | RETURN expr SEMICOLON { $1->addSibling($2); $$=$1; }
 
+//if else语句
 if_else_stmt
 : if_stmt else_stmt {$1->addSibling($2); $$ = $1;}
 ;
@@ -266,16 +277,19 @@ else_stmt
 }
 ;
 
+//输入
 scanf_stmt
 : SCANF LPAREN function_call_idlist RPAREN SEMICOLON {$1->addChild($3); $$=$1;}
 | SCANF LPAREN RPAREN SEMICOLON {$$=$1;}
 ;
 
+//输出
 printf_stmt
 : PRINTF LPAREN function_call_idlist RPAREN SEMICOLON {$1->addChild($3); $$=$1;}
 | PRINTF LPAREN RPAREN SEMICOLON {$$=$1;}
 ;
 
+//声明
 declaration
 : T IDENTIFIER LOP_ASSIGN expr{ 
     TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
@@ -302,6 +316,7 @@ IDLIST
 | IDENTIFIER { $$ = $1; }
 ;
 
+//几种赋值or计算赋值
 assign_stmt
 : IDENTIFIER LOP_ASSIGN expr SEMICOLON{
     TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
@@ -341,6 +356,7 @@ assign_stmt
     $$ = node;}
 ;
 
+//表达式
 expr
 : LPAREN expr RPAREN  { $$ = $2; }
 | expr PLUS expr	{ $$ = expr_addChild($1, $2, $3); }
@@ -371,6 +387,7 @@ expr
 | STRING         { $$ = $1;}
 ;
 
+//类型
 T: T_INT {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_INT;} 
 | T_CHAR {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_CHAR;}
 | T_BOOL {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_BOOL;}

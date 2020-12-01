@@ -21,7 +21,7 @@ enum OperatorType
     OP_MINUS,
     OP_MULTI,
     OP_DIVID,
-    OP_NOD,
+    OP_MOD,
     OP_AND,
     OP_OR,
     OP_NOT,
@@ -43,7 +43,7 @@ enum StmtType {
     STMT_DECL,  //声明
     STMT_WHILE,
     STMT_FUNC_DECL,
-    STMT_DECL,
+    STMT_FOR,
     STMT_FUNC_DEF,
     STMT_FUNC_CALL,
     STMT_IF,
@@ -83,7 +83,7 @@ public:
 
 public:
     OperatorType optype;  // 运算符操作类型
-    Type* type;
+    Type* type;     //常量类型     
     StmtType stype; //表达式类型
     int int_val;  //整型值数值
     char ch_val;  //char类型数值
@@ -99,7 +99,7 @@ public:
 public:
     TreeNode(int lineno, NodeType type);
     TreeNode *expr_addChild(TreeNode*, TreeNode*, TreeNode*);  //简化表达式的插入
-    TreeNode *for_addChild(TreeNode*, TreeNode*, TreeNode*, TreeNode*, TreeNode*);  //简化for循环的插入
+    TreeNode *for_addChild(TreeNode*, TreeNode*, TreeNode*, TreeNode*, TreeNode*);  //简化for循环的插入，加入作用域支持
 };
 
 #endif

@@ -33,7 +33,9 @@ void TreeNode::genNodeId() {
 }
 
 void TreeNode::printNodeInfo() {
-    string TYPE = "";
+    //具体逻辑是根据不同的输入选择不同的函数进行字符串化输出
+    string type = "";
+    string nodetype = "";
     
 }
 
@@ -65,12 +67,137 @@ void TreeNode::printSpecialInfo() {
 }
 
 string TreeNode::sType2String(StmtType type) {
-    return "?";
+    switch(type){
+        case STMT_ASSIGN:
+            return "STMT_ASSIGN";
+            break;
+        case STMT_DECL:
+            return "STMT_DECL";
+            break;
+        case STMT_DIVID_ASSIGN:
+            return "/=";
+            break;
+        case STMT_ELSE:
+            return "STMT_ELSE";
+            break;
+        case STMT_FUNC_CALL:
+            return "STMT_FUNC_CALL";
+            break;
+        case STMT_FUNC_DECL:
+            return "STMT_FUNC_DECL";
+            break;
+        case STMT_FUNC_DEF:
+            return "STMT_FUNC_DEF";
+            break;
+        case STMT_IF:
+            return "STMT_IF";
+            break;
+        case STMT_MINUS_ASSIGN:
+            return "-=";
+            break;
+        case STMT_MOD_ASSIGN:
+            return "%=";
+            break;
+        case STMT_MULTI_ASSIGN:
+            return "*=";
+            break;
+        case STMT_PLUS_ASSIGN:
+            return "+=";
+            break;
+        case STMT_PRINTF:
+            return "STMT_PRINTF";
+            break;
+        case STMT_RETURN:
+            return "STMT_RETURN";
+            break;
+        case STMT_SCANF:
+            return "STMT_SCANF";
+            break;
+        case STMT_SCOPE:
+            return "STMT_SCOPE";
+            break;
+        case STMT_SKIP:
+            return "STMT_SKIP";
+            break;
+        case STMT_WHILE:
+            return "STMT_WHILE";
+            break;
+        case STMT_FOR:
+            return "STMT_FOR";
+            break;
+        default:
+            return "?";
+            break;
+    }
 }
 
 
 string TreeNode::nodeType2String (NodeType type){
-    return "<>";
+    switch(type){
+        case NODE_CONST:
+            return "NODE_CONST";
+        case NODE_EXPR:
+            return "NODE_EXPR";
+        case NODE_MAIN:
+            return "NODE_MAIN";
+        case NODE_PROG:
+            return "NODE_PROG";
+        case NODE_STMT:
+            return "NODE_STMT";
+        case NODE_TYPE:
+            return "NODE_TYPE";
+        case NODE_VAR:
+            return "NODE_VAR";
+        default:
+            return "<>";
+            break;
+    }
+}
+
+string TreeNode::opType2String (OperatorType type) {
+    switch(type){
+        case OP_AND:
+            return "&";
+        case OP_BEQ:
+            return ">=";
+        case OP_BT:
+            return ">";
+        case OP_DIVID:
+            return "/";
+        case OP_EQ:
+            return "==";
+        case OP_LG_AND:
+            return "&&";
+        case OP_LG_NOT:
+            return "!";
+        case OP_LG_OR:
+            return "||";
+        case OP_MINUS:
+            return "-";
+        case OP_MULTI:
+            return "*";
+        case OP_NEQ:
+            return "!=";
+        case OP_MOD:
+            return "%";
+        case OP_ST:
+            return "<";
+        case OP_OR:
+            return "|";
+        case OP_NOT:
+            return "~";
+        case OP_PLUS:
+            return "+";
+        case OP_SEQ:
+            return "<=";
+        case OP_SELFM:
+            return "--";
+        case OP_SELFP:
+            return "++";
+        default:
+            return "?";
+            break;
+    }
 }
 
 TreeNode* TreeNode::expr_addChild(TreeNode* node1, TreeNode* node2, TreeNode* node3){
@@ -83,8 +210,10 @@ TreeNode* TreeNode::expr_addChild(TreeNode* node1, TreeNode* node2, TreeNode* no
 }
 
 TreeNode *for_addChild(int lineno,TreeNode *node1, TreeNode *node2, TreeNode *node3, TreeNode *node4){
+    //for根节点
     TreeNode *node = new TreeNode(lineno, NODE_STMT);
     node->stype = STMT_FOR;
+    //添加作用域
     TreeNode* node_scope = new TreeNode(lineno, NODE_STMT);
     node_scope->stype = STMT_SCOPE;
     node_scope->addChild(node1);
