@@ -70,7 +70,6 @@ void TreeNode::printNodeInfo(TreeNode* t) {
         default:
             break;
     }
-
     cout << "lno@" << t->lineno << "  "<< "@" << t->nodeID << "  " << nodeType2String(t->nodeType) << "  " << type << "  children:[";
     t->printChildrenId();
     cout << "]" << endl;

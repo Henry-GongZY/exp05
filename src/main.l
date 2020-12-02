@@ -221,7 +221,7 @@ IDENTIFIER [[:alpha:]_][[:alpha:][:digit:]_]*
 {CHAR} {
     TreeNode* node = new TreeNode(lineno, NODE_CONST); //常量节点和行数
     node->type = TYPE_CHAR;
-    node->ch_val = yytext[1]; //这里原来错了？
+    node->ch_val = yytext[1];
     yylval = node;
     return CHAR;
 }

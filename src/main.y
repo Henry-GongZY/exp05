@@ -46,7 +46,7 @@ program
 
 statements
 :  statement {$$=$1;}
-|  statements statement {$$=$1; $$->addSibling($2);}
+|  statement statements {$1->addSibling($2); $$=$1;}
 |  LBRACE statements RBRACE { $$ = $2; }
 ;
 
@@ -168,7 +168,7 @@ function_declaration_id
 //函数定义
 function_definition
 : T IDENTIFIER LPAREN function_definition_idlist RPAREN statements {
-    TreeNode* node = new TreeNode($2->lineno, NODE_STMT);
+    TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
     node->stype = STMT_FUNC_DEF;
     TreeNode* node_scope = new TreeNode($1->lineno, NODE_STMT);
     node_scope->stype = STMT_SCOPE;
