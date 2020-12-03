@@ -77,7 +77,11 @@ public:
     void printChildrenId();
 
     void printAST(); // 先输出自己 + 孩子们的id；再依次让每个孩子输出AST。
+    void printData();
     void printSpecialInfo();
+
+    // void genSymbolTable(int);
+    // void printSymbolTable();
 
     void genNodeId();
 
@@ -86,7 +90,6 @@ public:
     OperatorType optype;  // 运算符操作类型
     Type* type;     //常量类型     
     StmtType stype; //表达式类型
-
     int int_val;  //整型值数值
     char ch_val;  //char类型数值
     bool b_val;   //bool类型数值
@@ -105,5 +108,7 @@ public:
 
 TreeNode *expr_addChild(TreeNode*, TreeNode*, TreeNode*);  //简化表达式的插入
 TreeNode *for_addChild(int, TreeNode*, TreeNode*, TreeNode*, TreeNode*);  //简化for循环的插入，加入作用域支持
+
+// vector<map<int,TreeNode*>> SymbolTable;
 
 #endif

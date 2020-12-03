@@ -80,3 +80,4 @@ lno@19  @69  NODE_VAR  var name: i  children:[]
 lno@21  @71  NODE_STMT  STMT_PRINTF  children:[@72 @73 ]
 lno@21  @72  NODE_CONST  string:"Have fun: %d\n"  children:[]
 lno@21  @73  NODE_VAR  var name: i  children:[]
+4

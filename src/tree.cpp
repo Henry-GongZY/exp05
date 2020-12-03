@@ -1,5 +1,6 @@
 #include "tree.h"
-int nodeid;
+int nodeid = 0;
+int scopecount = 0;
 
 void TreeNode::addChild(TreeNode* child) {
     if (this->child == nullptr)   //没有孩子添加孩子
@@ -91,8 +92,11 @@ void TreeNode::printAST() {
         t2->printAST();
 }
 
+void TreeNode::printData(){
+    this->printAST();
+    cout<< scopecount <<endl;
+}
 
-// You can output more info...
 void TreeNode::printSpecialInfo() {
     switch(this->nodeType){
         case NODE_CONST:
@@ -259,6 +263,7 @@ TreeNode *for_addChild(int lineno,TreeNode *node1, TreeNode *node2, TreeNode *no
     //添加作用域
     TreeNode* node_scope = new TreeNode(lineno, NODE_STMT);
     node_scope->stype = STMT_SCOPE;
+    scopecount++;
     node_scope->addChild(node1);
     node_scope->addChild(node2);
     node_scope->addChild(node3);
