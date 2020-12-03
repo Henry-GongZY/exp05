@@ -80,9 +80,6 @@ public:
     void printData();
     void printSpecialInfo();
 
-    // void genSymbolTable(int);
-    // void printSymbolTable();
-
     void genNodeId();
 
 public:
@@ -95,7 +92,6 @@ public:
     bool b_val;   //bool类型数值
     double d_val; //双精度浮点类型数值
     string str_val;  //string类型数值
-
     string var_name;  //变量名
 public:
     static string nodeType2String (NodeType type);
@@ -108,7 +104,5 @@ public:
 
 TreeNode *expr_addChild(TreeNode*, TreeNode*, TreeNode*);  //简化表达式的插入
 TreeNode *for_addChild(int, TreeNode*, TreeNode*, TreeNode*, TreeNode*);  //简化for循环的插入，加入作用域支持
-
-// vector<map<int,TreeNode*>> SymbolTable;
 
 #endif

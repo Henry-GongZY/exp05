@@ -3,7 +3,6 @@
     #define YYSTYPE TreeNode *  
     TreeNode* root;
     extern int lineno;
-    extern int scopecount;
     int yylex();
     int yyerror( char const * );
 %}
@@ -55,7 +54,6 @@ statement
 : T MAIN LPAREN RPAREN statements {
     TreeNode* node = new TreeNode($1->lineno,NODE_STMT);
     node->stype = STMT_SCOPE;
-    scopecount++;
     node->addChild($5);
     $2->addChild($1);
     $2->addChild(node);
@@ -85,7 +83,6 @@ while_stmt
     TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
     node->stype = STMT_WHILE;
     TreeNode* node_scope = new TreeNode($1->lineno, NODE_STMT);
-    scopecount++;
     node_scope->stype = STMT_SCOPE;
     node_scope->addChild($3);
     node_scope->addChild($5);
@@ -175,7 +172,6 @@ function_definition
     node->stype = STMT_FUNC_DEF;
     TreeNode* node_scope = new TreeNode($1->lineno, NODE_STMT);
     node_scope->stype = STMT_SCOPE;
-    scopecount++;
     node->addChild($1);
     node->addChild($2);
     node_scope->addChild($4);
@@ -187,7 +183,6 @@ function_definition
     node->stype = STMT_FUNC_DEF;
     TreeNode* node_scope = new TreeNode($1->lineno, NODE_STMT);
     node_scope->stype = STMT_SCOPE;
-    scopecount++;
     node->addChild($1);
     node->addChild($2);
     node_scope->addChild($5);
@@ -264,7 +259,6 @@ if_stmt
     //开辟作用域空间，并将之链接到if下
     TreeNode* node_scope = new TreeNode($1->lineno,NODE_STMT);
     node_scope->stype = STMT_SCOPE;
-    scopecount++;
     node_scope->addChild($5);
     node->addChild(node_scope);
     $$ = node;
@@ -277,7 +271,6 @@ else_stmt
     node->stype = STMT_ELSE;
     TreeNode* node_scope = new TreeNode($1->lineno,NODE_STMT);
     node_scope->stype = STMT_SCOPE;
-    scopecount++;
     node_scope->addChild($2);
     node->addChild(node_scope);
     $$ = node;

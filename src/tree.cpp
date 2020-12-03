@@ -1,6 +1,7 @@
+#ifndef TREE_CPP
+#define TREE_CPP
 #include "tree.h"
 int nodeid = 0;
-int scopecount = 0;
 
 void TreeNode::addChild(TreeNode* child) {
     if (this->child == nullptr)   //没有孩子添加孩子
@@ -94,7 +95,7 @@ void TreeNode::printAST() {
 
 void TreeNode::printData(){
     this->printAST();
-    cout<< scopecount <<endl;
+    
 }
 
 void TreeNode::printSpecialInfo() {
@@ -263,7 +264,6 @@ TreeNode *for_addChild(int lineno,TreeNode *node1, TreeNode *node2, TreeNode *no
     //添加作用域
     TreeNode* node_scope = new TreeNode(lineno, NODE_STMT);
     node_scope->stype = STMT_SCOPE;
-    scopecount++;
     node_scope->addChild(node1);
     node_scope->addChild(node2);
     node_scope->addChild(node3);
@@ -271,3 +271,4 @@ TreeNode *for_addChild(int lineno,TreeNode *node1, TreeNode *node2, TreeNode *no
     node->addChild(node_scope);
     return node;
 }
+#endif
