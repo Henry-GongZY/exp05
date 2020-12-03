@@ -11,7 +11,7 @@ enum NodeType
     NODE_EXPR,   //表达式
     NODE_TYPE,   //类型
     NODE_STMT,   //语句
-    NODE_PROG,   
+    NODE_PROG,   //程序树根
     NODE_MAIN    //main函数入口
 };
 
@@ -66,6 +66,7 @@ public:
     int nodeID;  //用于作业的序号输出
     int lineno;  //记录行号
     NodeType nodeType; //节点类型
+    map<string,TreeNode*> SymbolTable;
 
     TreeNode* child = nullptr;  //一个孩子，其他孩子表现为此孩子的兄弟
     TreeNode* sibling = nullptr;  //兄弟
@@ -81,9 +82,8 @@ public:
     void printSpecialInfo();
 
     void genNodeId();
-
+    void genSymbolTable();
 public:
-
     OperatorType optype;  // 运算符操作类型
     Type* type;     //常量类型     
     StmtType stype; //表达式类型

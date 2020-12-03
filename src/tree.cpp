@@ -95,7 +95,54 @@ void TreeNode::printAST() {
 
 void TreeNode::printData(){
     this->printAST();
-    
+    this->tableInsert();
+    this->tablePrint();
+}
+
+void TreeNode::tableInsert(){
+    TreeNode *curr = this;
+    if (curr->nodeType == NODE_STMT && curr->stype == STMT_DECL)
+    {
+        if (curr->child != nullptr)
+        {
+            if (curr->child->nodeType == NODE_VAR)
+                this->SymbolTable[curr->child->var_name] = curr->child;
+            TreeNode *tmp = curr->child->sibling;
+            while (tmp != nullptr)
+            {
+                if (tmp->nodeType == NODE_VAR)
+                    this->SymbolTable[tmp->var_name] = tmp;
+                tmp = tmp->sibling;
+            }
+        }
+    }
+    for (TreeNode *t = this->child; t; t = t->sibling)
+        t->tableInsert();
+}
+
+void TreeNode::genSymbolTable(){
+    //本节点为作用域
+    if(this->stype==STMT_SCOPE){
+        this->tableInsert();
+    }
+    //本节点不是作用域
+    else{
+        if(this->sibling!=nullptr){
+            this->sibling->genSymbolTable();
+        } 
+        if(this->child!=nullptr){
+            this->child->genSymbolTable();
+        }
+        return;
+    }
+}
+
+void TreeNode::tablePrint(){
+    std::map<string, TreeNode *>::iterator iter;
+    for (iter = this->SymbolTable.begin(); iter != this->SymbolTable.end(); iter++)
+    {
+        cout<< iter->first<< "  "<<iter->second->nodeID<<",";
+    }
 }
 
 void TreeNode::printSpecialInfo() {
