@@ -76,6 +76,7 @@ public:
     
     void printNodeInfo(TreeNode*);
     void printChildrenId();
+    void typecheck();
 
     void printAST(); // 先输出自己 + 孩子们的id；再依次让每个孩子输出AST。
     void printData();
@@ -106,6 +107,6 @@ public:
 TreeNode *expr_addChild(TreeNode*, TreeNode*, TreeNode*);  //简化表达式的插入
 TreeNode *for_addChild(int, TreeNode*, TreeNode*, TreeNode*, TreeNode*);  //简化for循环的插入，加入作用域支持
 
-extern map<int,TreeNode*> SymbolTable;
+extern map<TreeNode*,int> SymbolTable;
 
 #endif

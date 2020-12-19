@@ -23,4 +23,4 @@ lno@6  @16  NODE_CONST  int:3  children:[]
 lno@7  @22  NODE_STMT  STMT_ASSIGN  children:[@20 @21 ]
 lno@7  @20  NODE_VAR  var name: s  children:[]
 lno@7  @21  NODE_CONST  int:100  children:[]
-1  a,2  s,
+a  1,s  2,

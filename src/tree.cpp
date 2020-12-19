@@ -3,7 +3,7 @@
 #include "tree.h"
 int nodeid = 0;
 int idid = 1;
-map<int,TreeNode*> SymbolTable;
+map<TreeNode*,int> SymbolTable;
 
 void TreeNode::addChild(TreeNode* child) {
     if (this->child == nullptr)   //没有孩子添加孩子
@@ -107,7 +107,7 @@ void TreeNode::tableInsert(){
         TreeNode *curr = this->child->sibling;
         while (curr != nullptr){
             if (curr->nodeType == NODE_VAR){
-                SymbolTable[idid] = curr;
+                SymbolTable[curr] = idid;
                 idid++;
             }
             curr = curr->sibling;
@@ -118,10 +118,10 @@ void TreeNode::tableInsert(){
 }
 
 void TreeNode::tablePrint(){
-    std::map<int, TreeNode *>::iterator iter;
+    std::map<TreeNode *, int>::iterator iter;
     for (iter = SymbolTable.begin(); iter != SymbolTable.end(); iter++)
     {
-        cout<< iter->first<< "  "<<iter->second->var_name<<",";
+        cout<< iter->first->var_name<< "  "<< iter->second<<",";
     }
 }
 

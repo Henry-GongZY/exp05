@@ -61,8 +61,6 @@ statement
 | if_else_stmt {$$ = $1;}
 | for_stmt {$$ = $1;}
 | while_stmt {$$ = $1;}
-| function_declaration {$$=$1;}//函数声明
-| function_definition {$$=$1; }//函数定义
 | function_call {$$=$1; }//函数调用
 | function_return {$$=$1; }//函数返回
 | scanf_stmt {$$ = $1;}
@@ -132,30 +130,6 @@ for_stmt
     $$ = node;}
 ;
 
-//函数声明
-function_declaration
-: T IDENTIFIER LPAREN function_declaration_idlist RPAREN SEMICOLON {
-    TreeNode* node = new TreeNode($2->lineno, NODE_STMT);
-    node->stype = STMT_FUNC_DECL;
-    node->addChild($1);
-    node->addChild($2);
-    node->addChild($4);
-    $$ = node;
-}
-| T IDENTIFIER LPAREN RPAREN SEMICOLON {
-    TreeNode* node = new TreeNode($2->lineno, NODE_STMT);
-    node->stype = STMT_FUNC_DECL;
-    node->addChild($1);
-    node->addChild($2);
-    $$ = node;
-}
-;
-
-//函数声明标识符列表
-function_declaration_idlist
-: function_declaration_id {$$=$1;}
-| function_declaration_id COMMA function_declaration_idlist {$1->addSibling($3); $$=$1;}
-;
 
 //声明标识符
 function_declaration_id
@@ -176,54 +150,6 @@ function_declaration_id
 | T {$$=$1;}
 ;
 
-//函数定义
-function_definition
-: T IDENTIFIER LPAREN function_definition_idlist RPAREN statement {
-    TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
-    node->stype = STMT_FUNC_DEF;
-    TreeNode* node_scope = new TreeNode($1->lineno, NODE_STMT);
-    node_scope->stype = STMT_SCOPE;
-    node->addChild($1);
-    node->addChild($2);
-    node_scope->addChild($4);
-    node_scope->addChild($6);
-    node->addChild(node_scope);
-    $$ = node;}
-| T IDENTIFIER LPAREN RPAREN statement {
-    TreeNode* node = new TreeNode($2->lineno, NODE_STMT);
-    node->stype = STMT_FUNC_DEF;
-    TreeNode* node_scope = new TreeNode($1->lineno, NODE_STMT);
-    node_scope->stype = STMT_SCOPE;
-    node->addChild($1);
-    node->addChild($2);
-    node_scope->addChild($5);
-    node->addChild(node_scope);
-    $$ = node;
-}
-;
-
-//函数定义标识符列表
-function_definition_idlist
-: function_definition_id {$$=$1;}
-| function_definition_id COMMA function_definition_idlist { $1->addSibling($3); $$=$1;}
-;
-
-//函数定义标识符
-function_definition_id
-: T IDENTIFIER LOP_ASSIGN expr{
-    TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
-    node->stype = STMT_DECL;
-    node->addChild($1);
-    node->addChild($2);
-    node->addChild($4);
-    $$ = node;} 
-| T IDENTIFIER {
-    TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
-    node->stype = STMT_DECL;
-    node->addChild($1);
-    node->addChild($2);
-    $$ = node;}
-;
 
 //函数调用
 function_call
