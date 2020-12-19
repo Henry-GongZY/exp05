@@ -2,6 +2,8 @@
 #define TREE_CPP
 #include "tree.h"
 int nodeid = 0;
+int idid = 1;
+map<int,TreeNode*> SymbolTable;
 
 void TreeNode::addChild(TreeNode* child) {
     if (this->child == nullptr)   //没有孩子添加孩子
@@ -25,7 +27,7 @@ void TreeNode::addSibling(TreeNode* sibling){
 TreeNode::TreeNode(int lineno, NodeType type) {
     this->lineno = lineno;
     this->nodeType = type;
-    genNodeId();
+    this->genNodeId();
 }
 
 void TreeNode::genNodeId() {
@@ -94,54 +96,32 @@ void TreeNode::printAST() {
 }
 
 void TreeNode::printData(){
-    this->printAST();
     this->tableInsert();
+    this->printAST();
     this->tablePrint();
 }
 
 void TreeNode::tableInsert(){
-    TreeNode *curr = this;
-    if (curr->nodeType == NODE_STMT && curr->stype == STMT_DECL)
+    if (this->stype == STMT_DECL && this->child != nullptr)
     {
-        if (curr->child != nullptr)
-        {
-            if (curr->child->nodeType == NODE_VAR)
-                this->SymbolTable[curr->child->var_name] = curr->child;
-            TreeNode *tmp = curr->child->sibling;
-            while (tmp != nullptr)
-            {
-                if (tmp->nodeType == NODE_VAR)
-                    this->SymbolTable[tmp->var_name] = tmp;
-                tmp = tmp->sibling;
+        TreeNode *curr = this->child->sibling;
+        while (curr != nullptr){
+            if (curr->nodeType == NODE_VAR){
+                SymbolTable[idid] = curr;
+                idid++;
             }
+            curr = curr->sibling;
         }
     }
     for (TreeNode *t = this->child; t; t = t->sibling)
         t->tableInsert();
 }
 
-void TreeNode::genSymbolTable(){
-    //本节点为作用域
-    if(this->stype==STMT_SCOPE){
-        this->tableInsert();
-    }
-    //本节点不是作用域
-    else{
-        if(this->sibling!=nullptr){
-            this->sibling->genSymbolTable();
-        } 
-        if(this->child!=nullptr){
-            this->child->genSymbolTable();
-        }
-        return;
-    }
-}
-
 void TreeNode::tablePrint(){
-    std::map<string, TreeNode *>::iterator iter;
-    for (iter = this->SymbolTable.begin(); iter != this->SymbolTable.end(); iter++)
+    std::map<int, TreeNode *>::iterator iter;
+    for (iter = SymbolTable.begin(); iter != SymbolTable.end(); iter++)
     {
-        cout<< iter->first<< "  "<<iter->second->nodeID<<",";
+        cout<< iter->first<< "  "<<iter->second->var_name<<",";
     }
 }
 

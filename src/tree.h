@@ -66,7 +66,7 @@ public:
     int nodeID;  //用于作业的序号输出
     int lineno;  //记录行号
     NodeType nodeType; //节点类型
-    map<string,TreeNode*> SymbolTable;
+    
 
     TreeNode* child = nullptr;  //一个孩子，其他孩子表现为此孩子的兄弟
     TreeNode* sibling = nullptr;  //兄弟
@@ -82,7 +82,8 @@ public:
     void printSpecialInfo();
 
     void genNodeId();
-    void genSymbolTable();
+    void tableInsert();
+    void tablePrint();
 public:
     OperatorType optype;  // 运算符操作类型
     Type* type;     //常量类型     
@@ -104,5 +105,7 @@ public:
 
 TreeNode *expr_addChild(TreeNode*, TreeNode*, TreeNode*);  //简化表达式的插入
 TreeNode *for_addChild(int, TreeNode*, TreeNode*, TreeNode*, TreeNode*);  //简化for循环的插入，加入作用域支持
+
+extern map<int,TreeNode*> SymbolTable;
 
 #endif
