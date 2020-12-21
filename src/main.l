@@ -133,6 +133,13 @@ IDENTIFIER [[:alpha:]_][[:alpha:][:digit:]_]*
     return NOT;
 }
 
+"!" {
+    TreeNode* node = new TreeNode(lineno, NODE_EXPR);
+    node->optype = OP_LG_NOT;
+    yylval = node;
+    return LG_NOT;
+}
+
 "++" {
     TreeNode* node = new TreeNode(lineno, NODE_EXPR);
     node->optype = OP_SELFP;

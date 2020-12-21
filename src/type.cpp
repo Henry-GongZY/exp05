@@ -20,7 +20,7 @@ string Type::getTypeInfo() {
             return "void";
         default:
             cerr << "shouldn't reach here, typeinfo";
-            assert(0);
+            return "no type or error";
     }
     return "?";
 }

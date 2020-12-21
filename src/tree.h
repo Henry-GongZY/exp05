@@ -42,12 +42,9 @@ enum StmtType {
     STMT_SKIP,  //跳过
     STMT_DECL,  //声明
     STMT_WHILE,
-    STMT_FUNC_DECL,
     STMT_FOR,
-    STMT_FUNC_DEF,
     STMT_FUNC_CALL,
     STMT_IF,
-    STMT_SCOPE, //作用域
     STMT_ELSE,
     STMT_ASSIGN,
     STMT_PLUS_ASSIGN,
@@ -76,18 +73,19 @@ public:
     
     void printNodeInfo(TreeNode*);
     void printChildrenId();
-    void typecheck();
+    void typeCheck();
 
     void printAST(); // 先输出自己 + 孩子们的id；再依次让每个孩子输出AST。
     void printData();
     void printSpecialInfo();
+    void doType();
 
     void genNodeId();
     void tableInsert();
     void tablePrint();
 public:
     OperatorType optype;  // 运算符操作类型
-    Type* type;     //常量类型     
+    Type* type;     //类型(整型、浮点型等)     
     StmtType stype; //表达式类型
     int int_val;  //整型值数值
     char ch_val;  //char类型数值
@@ -107,6 +105,6 @@ public:
 TreeNode *expr_addChild(TreeNode*, TreeNode*, TreeNode*);  //简化表达式的插入
 TreeNode *for_addChild(int, TreeNode*, TreeNode*, TreeNode*, TreeNode*);  //简化for循环的插入，加入作用域支持
 
-extern map<TreeNode*,int> SymbolTable;
+extern map<string,Type*> SymbolTable;
 
 #endif

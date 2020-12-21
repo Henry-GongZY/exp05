@@ -2,8 +2,7 @@
 #define TREE_CPP
 #include "tree.h"
 int nodeid = 0;
-int idid = 1;
-map<TreeNode*,int> SymbolTable;
+map<string,Type*> SymbolTable;
 
 void TreeNode::addChild(TreeNode* child) {
     if (this->child == nullptr)   //没有孩子添加孩子
@@ -35,7 +34,7 @@ void TreeNode::genNodeId() {
     nodeid++;
 }
 
-void TreeNode::printNodeInfo(TreeNode* t) {
+void TreeNode::printNodeInfo(TreeNode* t){
     //具体逻辑是根据不同的输入选择不同的函数进行字符串化输出
     string type = "";
     string const_type;
@@ -50,7 +49,11 @@ void TreeNode::printNodeInfo(TreeNode* t) {
             type = t->type->getTypeInfo();
             break;
         case NODE_VAR:
-            type = "var name: " + t->var_name;
+            if(t->type == nullptr){
+                type = "var name: " + t->var_name;
+            } else{
+                type = "var name: " + t->var_name + " type: "+ t->type->getTypeInfo();
+            }
             break;
         case NODE_CONST:
             const_type = t->type->getTypeInfo();
@@ -79,7 +82,7 @@ void TreeNode::printNodeInfo(TreeNode* t) {
     cout << "]" << endl;
 }
 
-void TreeNode::printChildrenId() {
+void TreeNode::printChildrenId(){
     if(this->child!=nullptr){
         TreeNode* child = this->child;
         while(child!=nullptr){
@@ -89,7 +92,7 @@ void TreeNode::printChildrenId() {
     }
 }
 
-void TreeNode::printAST() {
+void TreeNode::printAST(){
     printNodeInfo(this);
     for (TreeNode *t2 = this->child; t2; t2 = t2->sibling)
         t2->printAST();
@@ -97,18 +100,45 @@ void TreeNode::printAST() {
 
 void TreeNode::printData(){
     this->tableInsert();
+    this->doType();
+    //this->typeCheck();
     this->printAST();
     this->tablePrint();
 }
 
+void TreeNode::typeCheck(){
+	switch (this->nodeType){
+        case NODE_EXPR:
+            if(opType2String(this->optype) == "+"){
+
+            }
+        default:
+            break;
+    }
+}
+
+void TreeNode::doType(){
+    if(this->nodeType == NODE_VAR){
+        //
+        if(SymbolTable.find(this->var_name) == SymbolTable.end()){
+            cout<<"Var "<<"\""<<this->var_name<<"\""<<" not defined at line "<<this->lineno<<endl;
+            exit(1);
+        } else {
+            this->type = SymbolTable[this->var_name];
+        }
+    }
+    for (TreeNode *t = this->child; t; t = t->sibling)
+        t->doType();
+}
+
 void TreeNode::tableInsert(){
-    if (this->stype == STMT_DECL && this->child != nullptr)
-    {
+    if (this->stype == STMT_DECL && this->child != nullptr){
         TreeNode *curr = this->child->sibling;
+        Type* temp = this->child->type;
         while (curr != nullptr){
             if (curr->nodeType == NODE_VAR){
-                SymbolTable[curr] = idid;
-                idid++;
+                SymbolTable[curr->var_name] = temp;
+                curr->type = temp;
             }
             curr = curr->sibling;
         }
@@ -118,10 +148,10 @@ void TreeNode::tableInsert(){
 }
 
 void TreeNode::tablePrint(){
-    std::map<TreeNode *, int>::iterator iter;
+    std::map<string, Type*>::iterator iter;
     for (iter = SymbolTable.begin(); iter != SymbolTable.end(); iter++)
     {
-        cout<< iter->first->var_name<< "  "<< iter->second<<",";
+        cout<< iter->first<<"  "<< iter->second->getTypeInfo()<<",";
     }
 }
 
@@ -159,12 +189,6 @@ string TreeNode::sType2String(StmtType type) {
         case STMT_FUNC_CALL:
             return "STMT_FUNC_CALL";
             break;
-        case STMT_FUNC_DECL:
-            return "STMT_FUNC_DECL";
-            break;
-        case STMT_FUNC_DEF:
-            return "STMT_FUNC_DEF";
-            break;
         case STMT_IF:
             return "STMT_IF";
             break;
@@ -188,9 +212,6 @@ string TreeNode::sType2String(StmtType type) {
             break;
         case STMT_SCANF:
             return "STMT_SCANF";
-            break;
-        case STMT_SCOPE:
-            return "STMT_SCOPE";
             break;
         case STMT_SKIP:
             return "STMT_SKIP";
@@ -288,14 +309,10 @@ TreeNode *for_addChild(int lineno,TreeNode *node1, TreeNode *node2, TreeNode *no
     //for根节点
     TreeNode *node = new TreeNode(lineno, NODE_STMT);
     node->stype = STMT_FOR;
-    //添加作用域
-    TreeNode* node_scope = new TreeNode(lineno, NODE_STMT);
-    node_scope->stype = STMT_SCOPE;
-    node_scope->addChild(node1);
-    node_scope->addChild(node2);
-    node_scope->addChild(node3);
-    node_scope->addChild(node4);
-    node->addChild(node_scope);
+    node->addChild(node1);
+    node->addChild(node2);
+    node->addChild(node3);
+    node->addChild(node4);
     return node;
 }
 #endif

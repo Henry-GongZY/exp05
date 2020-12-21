@@ -1,9 +1,12 @@
 //第一次测试样例
-void main()
+int main()
 {
-    int a, s;
-    for(a = 0 ; a <=100 ;a=10 )
-        s+=3;
-    s=100;
+    bool k;
+    int b;
+    char c;
+    double m,n,p,q;
+    m=10;
+    n=100;
+    p = m+n;
 }
 //first test

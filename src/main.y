@@ -49,11 +49,8 @@ statements
 //语句
 statement
 : T MAIN LPAREN RPAREN statements {
-    TreeNode* node = new TreeNode($1->lineno,NODE_STMT);
-    node->stype = STMT_SCOPE;
-    node->addChild($5);
     $2->addChild($1);
-    $2->addChild(node);
+    $2->addChild($5);
     $$ = $2;
 }
 | LBRACE statements RBRACE { $$ = $2; }
@@ -71,6 +68,7 @@ statement
     $$->stype = STMT_SKIP;
 }
 | declaration SEMICOLON {$$ = $1;}
+| expr SEMICOLON {$$ = $1;}
 ;
 
 //while语句
@@ -78,11 +76,8 @@ while_stmt
 : WHILE LPAREN expr RPAREN statement {
     TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
     node->stype = STMT_WHILE;
-    TreeNode* node_scope = new TreeNode($1->lineno, NODE_STMT);
-    node_scope->stype = STMT_SCOPE;
-    node_scope->addChild($3);
-    node_scope->addChild($5);
-    node->addChild(node_scope);
+    node->addChild($3);
+    node->addChild($5);
     $$ = node;}
 ;
 
@@ -195,11 +190,7 @@ if_stmt
     TreeNode* node = new TreeNode($1->lineno,NODE_STMT);
     node->stype = STMT_IF;
     node->addChild($3);
-    //开辟作用域空间，并将之链接到if下
-    TreeNode* node_scope = new TreeNode($1->lineno,NODE_STMT);
-    node_scope->stype = STMT_SCOPE;
-    node_scope->addChild($5);
-    node->addChild(node_scope);
+    node->addChild($5);
     $$ = node;
 }
 ;
@@ -208,10 +199,7 @@ else_stmt
 : ELSE statement {
     TreeNode* node = new TreeNode($1->lineno,NODE_STMT);
     node->stype = STMT_ELSE;
-    TreeNode* node_scope = new TreeNode($1->lineno,NODE_STMT);
-    node_scope->stype = STMT_SCOPE;
-    node_scope->addChild($2);
-    node->addChild(node_scope);
+    node->addChild($2);
     $$ = node;
 }
 ;
@@ -230,7 +218,7 @@ printf_stmt
 
 //声明
 declaration
-: T IDENTIFIER LOP_ASSIGN expr{ 
+: T IDENTIFIER LOP_ASSIGN expr{  //int a = 表达式
     TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
     node->stype = STMT_DECL;
     node->addChild($1);
@@ -238,7 +226,7 @@ declaration
     node->addChild($4);
     $$ = node;   
 } 
-| T IDLIST {
+| T IDLIST { //int 标识符列表
     TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
     node->stype = STMT_DECL;
     node->addChild($1);
@@ -323,12 +311,12 @@ expr
 | expr LG_AND expr  { $$ = expr_addChild($1, $2, $3); }
 | expr LG_OR expr   { $$ = expr_addChild($1, $2, $3); }
 | LG_NOT expr       { $$ = expr_addChild($2, $1, NULL); }
-| MINUS expr %prec UMINUS   { $$ = expr_addChild($2, $1, NULL); }
-| IDENTIFIER     { $$ = $1;}
-| INTEGER        { $$ = $1;}
-| DOUBLE         { $$ = $1;}
-| CHAR           { $$ = $1;}
-| STRING         { $$ = $1;}
+| MINUS expr %prec UMINUS   { $$ = expr_addChild($2, $1, NULL); $$->type = $2->type;}
+| IDENTIFIER     { $$ = $1; $$->type = $1->type;}
+| INTEGER        { $$ = $1; $$->type = TYPE_INT;}
+| DOUBLE         { $$ = $1; $$->type = TYPE_DOUBLE;}
+| CHAR           { $$ = $1; $$->type = TYPE_CHAR;}
+| STRING         { $$ = $1; $$->type = TYPE_STRING;}
 ;
 
 //类型
