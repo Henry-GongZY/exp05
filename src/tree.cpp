@@ -112,9 +112,45 @@ void TreeNode::printData(){
 
 bool TreeNode::typeCheck(){
 	switch (this->nodeType){
+        case NODE_STMT:
+            if(sType2String(this->stype) == "=" || sType2String(this->stype) == "+=" \
+            || sType2String(this->stype) == "-=" || sType2String(this->stype) == "*=" \
+            || sType2String(this->stype) == "%=" || sType2String(this->stype) == "/=" ){
+                if(this->child->typeCheck()&&this->child->sibling->typeCheck()){
+                    if(this->child->type->getTypeInfo() == this->child->sibling->type->getTypeInfo()){
+                        this->type = TYPE_BOOL;
+                        return true;
+                    } else {
+                        cout<<"ASSIGN STMT type error at line "<<lineno<<endl;
+                        exit(1);
+                    }
+                } else{
+                    cout<<"ASSIGN STMT type error at line "<<lineno<<endl;
+                    exit(1);
+                } 
+            } else if (sType2String(this->stype) == "STMT_IF"){
+                if(this->child->typeCheck()){
+                    if(this->child->type->getTypeInfo()!="bool"){
+                        cout<<"IF STMT type error at line "<<lineno<<endl;
+                        exit(1);
+                    } else{
+                        return true;
+                    }
+                }
+            } else if (sType2String(this->stype) == "STMT_WHILE"){
+                if(this->child->typeCheck()){
+                    if(this->child->type->getTypeInfo()!="bool"){
+                        cout<<"WHILE STMT type error at line "<<lineno<<endl;
+                        exit(1);
+                    } else{
+                        return true;
+                    }
+                }
+            } else return true;
         case NODE_EXPR:
             if(opType2String(this->optype) == "+" || opType2String(this->optype) == "-" \
-            ||opType2String(this->optype) == "*" ||opType2String(this->optype) == "/"){
+            ||opType2String(this->optype) == "*" || opType2String(this->optype) == "/"){
+                
                 if(this->child->typeCheck() && this->child->sibling->typeCheck()){
                     if(this->child->type->getTypeInfo() == "int"&&this->child->sibling->type->getTypeInfo() == "int"){
                         this->type = TYPE_INT;
@@ -137,6 +173,7 @@ bool TreeNode::typeCheck(){
                 }
             }
             if(opType2String(this->optype) == "%"){
+                
                 if(this->child->typeCheck() && this->child->sibling->typeCheck()){
                     if(this->child->type->getTypeInfo() == "int"&&this->child->sibling->type->getTypeInfo() == "int"){
                         this->type = TYPE_INT;
@@ -212,7 +249,6 @@ bool TreeNode::typeCheck(){
                 }
                 return true;
             }
-
         case NODE_TYPE:
             return true;
         case NODE_VAR:
@@ -284,7 +320,7 @@ void TreeNode::printSpecialInfo() {
 string TreeNode::sType2String(StmtType type) {
     switch(type){
         case STMT_ASSIGN:
-            return "STMT_ASSIGN";
+            return "=";
             break;
         case STMT_DECL:
             return "STMT_DECL";

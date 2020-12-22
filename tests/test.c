@@ -3,8 +3,7 @@ int main()
 {
     int a;
     int b;
-    double c;
-    int d;
-    a+b==c+d;
+    char c;
+    b+=(a+b);
 }
 //first test
