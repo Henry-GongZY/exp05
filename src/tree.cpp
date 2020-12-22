@@ -101,20 +101,79 @@ void TreeNode::printAST(){
 void TreeNode::printData(){
     this->tableInsert();
     this->doType();
-    //this->typeCheck();
+    this->typeCheck();
     this->printAST();
     this->tablePrint();
 }
 
-void TreeNode::typeCheck(){
+bool TreeNode::typeCheck(){
 	switch (this->nodeType){
         case NODE_EXPR:
-            if(opType2String(this->optype) == "+"){
-
+            if(opType2String(this->optype) == "+" || opType2String(this->optype) == "-" \
+            ||opType2String(this->optype) == "*" ||opType2String(this->optype) == "/"){
+                if(this->child->typeCheck() && this->child->sibling->typeCheck()){
+                    if(this->child->type->getTypeInfo() == "int"&&this->child->sibling->type->getTypeInfo() == "int"){
+                        this->type = TYPE_INT;
+                        return true;
+                    } else if(this->child->type->getTypeInfo() == "double"&&this->child->sibling->type->getTypeInfo() == "double"){
+                        this->type = TYPE_DOUBLE;
+                        return true;
+                    }else if((this->child->type->getTypeInfo() == "double"&&this->child->sibling->type->getTypeInfo() == "int")\
+                    ||(this->child->type->getTypeInfo() == "int"&&this->child->sibling->type->getTypeInfo() == "double")){
+                        this->type = TYPE_DOUBLE;
+                        return true;
+                    }
+                    else{
+                        cout<<"Expr type error at line "<<lineno<<endl;
+                        exit(1);
+                    }
+                } else{
+                     cout<<"Expr type error at line "<<this->child->lineno<<endl;
+                     exit(1);
+                }
             }
+            if(opType2String(this->optype) == "%"){
+                if(this->child->typeCheck() && this->child->sibling->typeCheck()){
+                    if(this->child->type->getTypeInfo() == "int"&&this->child->sibling->type->getTypeInfo() == "int"){
+                        this->type = TYPE_INT;
+                        return true;
+                    } else{
+                        cout<<"Expr type error at line "<<lineno<<endl;
+                        exit(1);
+                    }
+                } else{
+                     cout<<"Expr type error at line "<<this->child->lineno<<endl;
+                     exit(1);
+                }
+            }
+            if(opType2String(this->optype) == "++" || opType2String(this->optype) == "--"){
+                if(this->child->nodeType == NODE_VAR){
+                    if(this->child->type->getTypeInfo()=="int" || (this->child->type->getTypeInfo()=="double")){
+                        this->type = this->child->type;
+                        return true;
+                    }
+                    else{
+                        cout<<"Expr type error at line "<<lineno<<endl;
+                        exit(1);
+                    }
+                } else{
+                    cout<<"Expr selfm/selfp not followed by var at line "<<this->child->lineno<<endl;
+                    exit(1);
+                }
+            }
+
+
+        case NODE_VAR:
+            return true;
+            break;
+        case NODE_CONST:
+            return true;
+            break;
         default:
             break;
     }
+    for (TreeNode *t = this->child; t; t = t->sibling)
+        t->typeCheck();
 }
 
 void TreeNode::doType(){

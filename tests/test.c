@@ -1,12 +1,14 @@
 //第一次测试样例
 int main()
 {
-    bool k;
-    int b;
-    char c;
-    double m,n,p,q;
-    m=10;
-    n=100;
-    p = m+n;
+    int a;
+    double b;
+    double c;
+    bool d;
+    char e;
+    a++;
+    b++;
+    c++;
+    e--;
 }
 //first test

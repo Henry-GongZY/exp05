@@ -73,7 +73,7 @@ public:
     
     void printNodeInfo(TreeNode*);
     void printChildrenId();
-    void typeCheck();
+    bool typeCheck();
 
     void printAST(); // 先输出自己 + 孩子们的id；再依次让每个孩子输出AST。
     void printData();

@@ -301,16 +301,16 @@ expr
 | expr AND expr     { $$ = expr_addChild($1, $2, $3); } 
 | expr OR expr      { $$ = expr_addChild($1, $2, $3); }
 | NOT expr          { $$ = expr_addChild($2, $1, NULL); }
-| expr XOR expr     { $$ = expr_addChild($1, $2, $3); }
+| expr XOR expr     { $$ = expr_addChild($1, $2, $3); } //not ready
 | expr EQ expr      { $$ = expr_addChild($1, $2, $3); }
 | expr BT expr      { $$ = expr_addChild($1, $2, $3); }
 | expr ST expr      { $$ = expr_addChild($1, $2, $3); }
 | expr BEQ expr     { $$ = expr_addChild($1, $2, $3); }
 | expr SEQ expr     { $$ = expr_addChild($1, $2, $3); }
-| expr NEQ expr     { $$ = expr_addChild($1, $2, $3); }
-| expr LG_AND expr  { $$ = expr_addChild($1, $2, $3); }
-| expr LG_OR expr   { $$ = expr_addChild($1, $2, $3); }
-| LG_NOT expr       { $$ = expr_addChild($2, $1, NULL); }
+| expr NEQ expr     { $$ = expr_addChild($1, $2, $3); } 
+| expr LG_AND expr  { $$ = expr_addChild($1, $2, $3); }  //not ready
+| expr LG_OR expr   { $$ = expr_addChild($1, $2, $3); }  //not ready
+| LG_NOT expr       { $$ = expr_addChild($2, $1, NULL); } //not ready
 | MINUS expr %prec UMINUS   { $$ = expr_addChild($2, $1, NULL); $$->type = $2->type;}
 | IDENTIFIER     { $$ = $1; $$->type = $1->type;}
 | INTEGER        { $$ = $1; $$->type = TYPE_INT;}
