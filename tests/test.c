@@ -2,13 +2,9 @@
 int main()
 {
     int a;
-    double b;
+    int b;
     double c;
-    bool d;
-    char e;
-    a++;
-    b++;
-    c++;
-    e--;
+    int d;
+    a+b==c+d;
 }
 //first test

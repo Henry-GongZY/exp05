@@ -6,11 +6,11 @@
 
 enum NodeType
 {
-    NODE_CONST,  //常量
-    NODE_VAR,    //变量
-    NODE_EXPR,   //表达式
-    NODE_TYPE,   //类型
-    NODE_STMT,   //语句
+    NODE_CONST,  //常量    ok
+    NODE_VAR,    //变量    ok
+    NODE_EXPR,   //表达式  ok
+    NODE_TYPE,   //类型    ok
+    NODE_STMT,   //语句  
     NODE_PROG,   //程序树根
     NODE_MAIN    //main函数入口
 };

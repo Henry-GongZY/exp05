@@ -43,7 +43,11 @@ void TreeNode::printNodeInfo(TreeNode* t){
             type = sType2String(t->stype);
             break;
         case NODE_EXPR:
-            type = "OP: " + opType2String(t->optype);
+            if(t->type == nullptr){
+                type = "OP: " + opType2String(t->optype);
+            } else{
+                type = "OP: " + opType2String(t->optype) + " type: "+ t->type->getTypeInfo();
+            }
             break;
         case NODE_TYPE:
             type = t->type->getTypeInfo();
@@ -161,14 +165,60 @@ bool TreeNode::typeCheck(){
                     exit(1);
                 }
             }
+            if((opType2String(this->optype) == "&&")||(opType2String(this->optype) == "||")){ 
+                if(this->child->typeCheck() && this->child->sibling->typeCheck()){
+                    if(this->child->type->getTypeInfo() == "bool"&&this->child->sibling->type->getTypeInfo() == "bool"){
+                        this->type = TYPE_BOOL;
+                        return true;
+                    } else{
+                        cout<<"Expr type error at line "<<lineno<<endl;
+                        exit(1);
+                    }
+                } else{
+                     cout<<"Expr type error at line "<<this->child->lineno<<endl;
+                     exit(1);
+                }
+            }
+            if(opType2String(this->optype) == "!") {
+                if(this->child->nodeType == NODE_VAR){
+                    if(this->child->type->getTypeInfo()=="bool"){
+                        this->type = TYPE_BOOL;
+                        return true;
+                    }
+                    else{
+                        cout<<"Expr type error at line "<<lineno<<endl;
+                        exit(1);
+                    }
+                } else{
+                    cout<<"Expr \"!\" not followed by var at line "<<this->child->lineno<<endl;
+                    exit(1);
+                }
+            }
+            if(opType2String(this->optype) == "==" || opType2String(this->optype) == "<=" || \
+               opType2String(this->optype) == ">=" || opType2String(this->optype) == "<" || \
+               opType2String(this->optype) == ">" || opType2String(this->optype) == "!=" ) {
+                if(this->child->typeCheck() && this->child->sibling->typeCheck()){
+                    if(((this->child->type->getTypeInfo() == "int")||(this->child->type->getTypeInfo() == "double")) \
+                    &&((this->child->sibling->type->getTypeInfo() == "int")||(this->child->sibling->type->getTypeInfo() == "double"))){
+                        this->type = TYPE_BOOL;
+                        return true;
+                    } else{
+                        cout<<"Expr type error at line "<<lineno<<endl;
+                        exit(1);
+                    }
+                } else{
+                     cout<<"Expr type error at line "<<this->child->lineno<<endl;
+                     exit(1);
+                }
+                return true;
+            }
 
-
+        case NODE_TYPE:
+            return true;
         case NODE_VAR:
             return true;
-            break;
         case NODE_CONST:
             return true;
-            break;
         default:
             break;
     }
