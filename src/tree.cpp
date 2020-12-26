@@ -153,7 +153,7 @@ bool TreeNode::typeCheck(){
                         return true;
                     }
                 }
-            }
+            } else return true;
             
         case NODE_EXPR:
             if(opType2String(this->optype) == "+" || opType2String(this->optype) == "-" \
