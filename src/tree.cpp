@@ -124,10 +124,7 @@ bool TreeNode::typeCheck(){
                         cout<<"ASSIGN STMT type error at line "<<lineno<<endl;
                         exit(1);
                     }
-                } else{
-                    cout<<"ASSIGN STMT type error at line "<<lineno<<endl;
-                    exit(1);
-                } 
+                }
             } else if (sType2String(this->stype) == "STMT_IF"){
                 if(this->child->typeCheck()){
                     if(this->child->type->getTypeInfo()!="bool"){
@@ -146,7 +143,18 @@ bool TreeNode::typeCheck(){
                         return true;
                     }
                 }
-            } else return true;
+            } else if (sType2String(this->stype) == "STMT_FOR"){
+                if(this->child->typeCheck() && this->child->sibling->typeCheck() 
+                && this->child->sibling->sibling->typeCheck() && this->child->sibling->sibling->sibling->typeCheck()){
+                    if(this->child->sibling->type->getTypeInfo()!="bool"){
+                        cout<<"FOR STMT type error at line "<<lineno<<endl;
+                        exit(1);
+                    } else {
+                        return true;
+                    }
+                }
+            }
+            
         case NODE_EXPR:
             if(opType2String(this->optype) == "+" || opType2String(this->optype) == "-" \
             ||opType2String(this->optype) == "*" || opType2String(this->optype) == "/"){
