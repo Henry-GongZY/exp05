@@ -118,7 +118,7 @@ bool TreeNode::typeCheck(){
             || sType2String(this->stype) == "%=" || sType2String(this->stype) == "/=" ){
                 if(this->child->typeCheck()&&this->child->sibling->typeCheck()){
                     if(this->child->type->getTypeInfo() == this->child->sibling->type->getTypeInfo()){
-                        this->type = TYPE_BOOL;
+                        this->type = this->child->type;
                         return true;
                     } else {
                         cout<<"ASSIGN STMT type error at line "<<lineno<<endl;
