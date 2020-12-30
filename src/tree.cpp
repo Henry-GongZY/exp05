@@ -266,6 +266,8 @@ bool TreeNode::typeCheck(){
         default:
             break;
     }
+    for (TreeNode *t = this->child; t; t = t->sibling)
+        t->typeCheck();
 }
 
 void TreeNode::doType(){
